@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Sistema Hotel</title>
+</head>
+<body>
+    <header class="header">
+      <h1 class="header-title">Sistema de Hotel</h1>
+    </header>
+
+<div class="container">
+
+  <div class="cadastrar">
+    <h2>Cadastrar Quarto</h2>
+    <input type="number" id="numero" placeholder="Número do quarto">
+    <select id="tipo">
+      <option value="Simples">Simples</option>
+      <option value="Duplo">Duplo</option>
+      <option value="Luxo">Luxo</option>
+    </select>
+    <button onclick="cadastrarQuarto()">Cadastrar</button>
+  </div>
+
+  <div class="reservar">
+    <h2>Reservar / Cancelar</h2>
+    <input type="number" id="numeroAcao" placeholder="Número do quarto">
+    <button onclick="reservar()">Reservar</button>
+    <button onclick="cancelar()">Cancelar Reserva</button>
+  </div>
+
+    <div class="filtros">
+        <h2>Consultar Quartos</h2>
+    <button onclick="listarTodos()">Todos os Quartos</button>
+
+    <div class="linha-botoes">
+        <button onclick="listarDisponiveis()">Disponíveis</button>
+        <button onclick="listarIndisponiveis()">Indisponíveis</button>
+    </div>
+    </div>
+</div>
+
+    <div>
+        <table>
+      <thead>
+        <tr>
+          <th>Número</th>
+          <th>Tipo</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaQuartos"></tbody>
+    </table>
+    </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
