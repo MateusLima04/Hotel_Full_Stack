@@ -1,86 +1,158 @@
-    let quartos = [];
-    let filtroAtual = "todos";
+const API = "http://localhost:8080/quartos";
+let filtroAtual = "todos";
 
-  function render() {
-    const tabela = document.getElementById("tabelaQuartos");
-    tabela.innerHTML = "";
 
-    let quartosAExibir = quartos;
+// RENDER (BUSCA DO BACKEND)
 
+async function render() {
+  const tabela = document.getElementById("tabelaQuartos");
+  tabela.innerHTML = "";
+
+  try {
+    const resposta = await fetch(API);
+    let quartos = await resposta.json();
+
+    // FILTROS
     if (filtroAtual === "disponivel") {
-      quartosAExibir = quartos.filter(q => q.disponivel);
+      quartos = quartos.filter(q => q.disponivel);
     } else if (filtroAtual === "indisponivel") {
-      quartosAExibir = quartos.filter(q => !q.disponivel);
+      quartos = quartos.filter(q => !q.disponivel);
     }
 
-    quartosAExibir.forEach(q => {
+    quartos.forEach(q => {
       const tr = document.createElement("tr");
 
-      if (q.novo) {
-        tr.classList.add("novo");
-        q.novo = false;
-      }
-
-      if (!q.disponivel) {
-        tr.classList.add("reservado");
-      }
+      const statusClass = q.disponivel ? "disponivel" : "reservado";
 
       tr.innerHTML = `
         <td>${q.numero}</td>
         <td>${q.tipo}</td>
-        <td>${q.disponivel ? 'Disponível' : 'Reservado'}</td>
+        <td class="${statusClass}">
+          ${q.disponivel ? "Disponível" : "Reservado"}
+        </td>
       `;
-
-      tr.id = "q" + q.numero;
 
       tabela.appendChild(tr);
     });
+
+  } catch (erro) {
+    console.error("Erro ao carregar quartos:", erro);
+    alert("Erro ao conectar com o servidor!");
+  }
+}
+
+
+// CADASTRAR (POST)
+
+async function cadastrarQuarto() {
+  const numero = document.getElementById("numero").value;
+  const tipo = document.getElementById("tipo").value;
+
+  if (!numero) {
+    alert("Digite um número!");
+    return;
   }
 
-  function cadastrarQuarto() {
-    const numero = document.getElementById("numero").value;
-    const tipo = document.getElementById("tipo").value;
+  try {
+    await fetch(API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        numero: numero,
+        tipo: tipo,
+        disponivel: true
+      })
+    });
 
-    quartos.push({ numero, tipo, disponivel: true, novo: true });
     render();
+
+  } catch (erro) {
+    console.error("Erro ao cadastrar:", erro);
+  }
+}
+
+// EXCLUIR QUARTO (DELETE)
+async function excluirQuarto() {
+  const numero = document.getElementById("numeroAcao").value;
+
+  if (!numero) {
+    alert("Digite um número!");
+    return;
   }
 
-  function reservar() {
-    const numero = document.getElementById("numeroAcao").value;
+  await fetch(`http://localhost:8080/quartos/${numero}/excluir`, {
+    method: "DELETE"
+  });
 
-    const q = quartos.find(q => q.numero == numero);
-    if (q) {
-      q.disponivel = false;
-      render();
-    }
+  render();
+}
+
+// RESERVAR (PUT)
+
+async function reservar() {
+  const numero = document.getElementById("numeroAcao").value;
+
+  if (!numero) {
+    alert("Digite um número!");
+    return;
   }
 
-  function cancelar() {
-    const numero = document.getElementById("numeroAcao").value;
-    const index = quartos.findIndex(q => q.numero == numero);
+  try {
+    await fetch(`${API}/${numero}/reservar`, {
+      method: "PUT"
+    });
 
-    if (index !== -1) {
-      const linha = document.getElementById("q" + numero);
-      linha.classList.add("removendo");
-
-      setTimeout(() => {
-        quartos.splice(index, 1);
-        render();
-      }, 600);
-    }
-  }
-
-  function listarDisponiveis() {
-    filtroAtual = "disponivel";
     render();
+
+  } catch (erro) {
+    console.error("Erro ao reservar:", erro);
+  }
+}
+
+
+// CANCELAR (DELETE)
+
+async function cancelar() {
+  const numero = document.getElementById("numeroAcao").value;
+
+  if (!numero) {
+    alert("Digite um número!");
+    return;
   }
 
-  function listarIndisponiveis() {
-    filtroAtual = "indisponivel";
-    render();
-  }
+  try {
+    await fetch(`${API}/${numero}`, {
+      method: "DELETE"
+    });
 
-  function listarTodos() {
-    filtroAtual = "todos";
     render();
+
+  } catch (erro) {
+    console.error("Erro ao cancelar:", erro);
   }
+}
+
+
+// FILTROS (FRONT)
+
+function listarDisponiveis() {
+  filtroAtual = "disponivel";
+  render();
+}
+
+function listarIndisponiveis() {
+  filtroAtual = "indisponivel";
+  render();
+}
+
+function listarTodos() {
+  filtroAtual = "todos";
+  render();
+}
+
+
+// INIT
+
+window.onload = render;

@@ -17,25 +17,26 @@ public class QuartoController {
         this.service = service;
     }
 
-    // LISTAR
     @GetMapping
     public List<Quarto> listar() {
         return service.listar();
     }
 
-    // CADASTRAR
     @PostMapping
     public void cadastrar(@RequestBody Quarto quarto) {
+        System.out.println("CHEGOU AQUI: " + quarto.getNumero());
         service.cadastrar(quarto);
     }
 
-    // RESERVAR
     @PutMapping("/{numero}/reservar")
     public void reservar(@PathVariable int numero) {
         service.reservar(numero);
     }
+    @DeleteMapping("/{numero}/excluir")
+    public void excluir(@PathVariable int numero) {
+        service.excluir(numero);
+    }
 
-    // CANCELAR
     @DeleteMapping("/{numero}")
     public void cancelar(@PathVariable int numero) {
         service.cancelar(numero);

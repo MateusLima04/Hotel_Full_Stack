@@ -1,18 +1,18 @@
 package com.sistema.Hotel.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class Quarto {
 
+    @Id
     private int numero;
+
     private String tipo;
     private boolean disponivel;
 
     public Quarto() {}
-
-    public Quarto(int numero, String tipo) {
-        this.numero = numero;
-        this.tipo = tipo;
-        this.disponivel = true;
-    }
 
     public int getNumero() {
         return numero;
