@@ -66,6 +66,8 @@ async function cadastrarQuarto() {
       })
     });
 
+    document.getElementById("numero").value = "";
+
     render();
 
   } catch (erro) {

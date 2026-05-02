@@ -24,7 +24,7 @@ public class QuartoController {
 
     @PostMapping
     public void cadastrar(@RequestBody Quarto quarto) {
-        System.out.println("CHEGOU AQUI: " + quarto.getNumero());
+        System.out.println("Quarto Cadastrado: " + quarto.getNumero());
         service.cadastrar(quarto);
     }
 
