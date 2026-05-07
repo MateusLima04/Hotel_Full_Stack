@@ -67,6 +67,7 @@ async function cadastrarQuarto() {
     });
 
     document.getElementById("numero").value = "";
+    document.getElementById("tipo").value = "Simples";
 
     render();
 
